@@ -1,34 +1,32 @@
-require("dotenv").config();
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
 
-const express = require("express");
-const path = require("path");
 
-const connectDB = require("./config/db");
-const videoRoutes = require("./routes/videoRoutes");
+const connectDb = require('./config/db');
 
+// 2. Instantiations
 const app = express();
-
-// Connect DB
-connectDB();
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-app.use(express.static(path.join(__dirname, "Public")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Pug setup
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "views"));
-
-// Routes
-app.use("/", videoRoutes);
-
-// Port
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+// 3. Configuration
+// Set templating engine to pug
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+connectDb();
+
+// 4. Middleware
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+
+// 5. Routes
+app.use('/', require('./route/videoRoutes'));
+
+// Handling non-existent routes
+app.use((req, res) => {
+  res.status(404).send('Oops! Route not found');
 });
+
+// 6. Bootstrap Server
+app.listen(PORT, () => console.log(`listening on port ${PORT}`));

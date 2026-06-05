@@ -1,21 +1,16 @@
-doctype html
-html
-  head
-    title= video.title
+extends layout
 
-  body
+block content
+  .container.py-4
+    a.btn.btn-outline-danger.mb-3(href="/listing") Back to videos
 
-    h1= video.title
+    h2.fw-bold #{video.title}
+    p.text-muted #{video.views} views . #{video.quality}
 
-    video(
-      width="800"
-      controls
-    )
-      source(
-        src="/" + video.videoPath
-        type="video/mp4"
-      )
+    video.watch-video.mt-3(controls)
+      source(src=video.videoPath)
 
-    p= video.description
-
-    p Quality: #{video.quality}
+    if video.description
+      .mt-4
+        h5 Description
+        p #{video.description}
